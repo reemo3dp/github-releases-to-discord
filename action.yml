@@ -2,6 +2,12 @@ name: Github Releases To Discord
 author: SethCohen
 description: Automatically send a stylized Discord webhook of a GitHub Release description to a specified Discord channel.
 inputs:
+  github_token:
+    description: github token
+    required: true
+  release_id:
+    description: The release id
+    required: false
   webhook_url:
     description: Discord's webhook url. Use GH repo secrets.
     required: true

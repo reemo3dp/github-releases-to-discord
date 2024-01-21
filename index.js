@@ -82,7 +82,20 @@ function getMaxDescription () {
 /**
  * Get the context of the action, returns a GitHub Release payload.
  */
-function getContext () {
+async function getContext () {
+    if(core.getInput('release_id') && core.getInput('release_id').length > 0) {
+        const release = (await github.getOctokit(core.getInput('github_token')).rest.repos.getRelease({
+            release_id: core.getInput('release_id'),
+            repo: github.context.repo.repo,
+            owner: github.context.repo.owner
+        }));
+        return {
+            body: release.data.body,
+            name: release.data.name,
+            html_url: release.data.html_url
+        }
+    }
+
     const payload = github.context.payload;
 
     return {
@@ -134,7 +147,7 @@ async function run () {
 
     if (!webhookUrl) return core.setFailed('webhook_url not set. Please set it.');
 
-    const {body, html_url, name} = getContext();
+    const {body, html_url, name} = await getContext();
 
     const description = formatDescription(body);
 
